@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+env/
+*.egg-info/
+
+# Distribution / packaging
+dist/
+build/
+*.egg
+
+# Local development settings
+*.bak
+*.swp
+*~
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Logs and databases
+*.log
+*.sqlite3
+db.sqlite3
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Compiled Python files
+*.pyc
+
+# Environment variables
+.env
+
+# Dependency management files
+pip-lock.txt
+
+data/
+cached_models/
+
+jupyter_commands
+
+# personal
+_notes.txt
+
+# ignore all downloaded models
+code/nlp/models/*
