@@ -51,3 +51,6 @@ _notes.txt
 
 # ignore all downloaded models
 code/nlp/models/*
+
+# hide onnx files as they are too large often 
+**/*.onnx
