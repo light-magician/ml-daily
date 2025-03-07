@@ -1,0 +1,9 @@
+[package]
+name = "rs_onnx_inference"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ort = { version = "2.0.0-rc.9", features = ["fetch-models"] }
+image = "0.24"
+ndarray = "0.15"

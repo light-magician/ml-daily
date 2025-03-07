@@ -54,3 +54,48 @@ code/nlp/models/*
 
 # hide onnx files as they are too large often 
 **/*.onnx
+
+# adding in visual object classes dataset
+**/voc/
+
+# hiding rust files at any depth
+# Rust build artifacts
+**/target/
+**/*.rs.bk
+**/Cargo.lock
+
+# Rust profiling and debugging
+**/perf.data
+**/perf.data.old
+**/flamegraph.svg
+**/*.profraw
+**/callgrind.out.*
+
+# IDE and editor files
+**/.idea/
+**/.vscode/
+**/*.swp
+**/*.swo
+**/.DS_Store
+
+# Generated documentation
+**/doc/
+
+# Backup files
+**/*~
+**/*.bak
+**/*.backup
+
+# Environment variables
+**/.env
+**/.env.local
+
+# Binary files
+**/*.exe
+**/*.dll
+**/*.so
+**/*.dylib
+
+# Test coverage
+**/coverage/
+**/*.lcov
