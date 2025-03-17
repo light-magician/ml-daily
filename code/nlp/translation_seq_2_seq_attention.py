@@ -159,3 +159,82 @@ def prepareData(lang1, lang2, reverse=False):
     
 get_ipython().run_line_magic('clear', '')
 input_lang, output_lang, pairs = prepareData('eng', 'fra', True)
+get_ipython().run_line_magic('save', 'translation_seq_2_seq_attention.py')
+get_ipython().run_line_magic('clear', '')
+get_ipython().run_cell_magic('capture', '', '# an RNN is a net that operates on a sequence and\n# uses its own output as input for subsequent steps\n# a Seq2Seq net operates with 2 RNNs encoder and decoder\n# encoder maps to lower dimensional space and decoder\n# maps back to higher dimensional space\n\n')
+class EncoderRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, dropout_p=0.1):
+        super(EncoderRNN, self).__init__()
+        self.hidden_size = hidden_size
+        self.embedding = nn.Embedding(input_size, hidden_size)
+        self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
+        self.dropout = nn.Dropout(dropout_p)
+        
+def forward(self, input):
+    embedded = self.dropout(self.embedding(input))
+    output, hidden = self.gru(embedded)
+    return output, hidden
+    
+get_ipython().run_cell_magic('capture', '', '# decoder will use last output of encoder called "context vector"\n# context vector is used as initial hidden state of decoder\n# at every step of decoding, the decoder is given an input token\n# and a hidden state\n# initial input token is SOS, initial hidden state is context vec\n\n')
+class DecoderRNN(nn.Module):
+    def __init__(self, hidden_size, output_size):
+        super(DecoderRNN, self).__init__()
+        self.embedding = nn.Embedding(output_size, hidden_size)
+        self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
+        self.out = nn.Linear(hidden_size, output_size)
+    def forward(self, encoder_outputs, encoder_hidden, target_tensor=None):
+        batch_size = encoder_outputs.size(0)
+        decoder_input = torch.empty(batch_size, 1, dtype=torch.long, device=device).fill(SOS_token)
+        decoder_hidden = encoder_hidden
+        decoder_outputs = []
+        for i in range(MAX_LENGTH):
+            decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+            decoder_outputs.append(decoder_output)
+            if target_tensor is not None:
+                decoder_input = target_tensor[:, i].unsqueeze(1)
+            else:
+                _, topi = decoder_output.topk(1)
+                decoder_input = topi.squeeze(-1).detach()
+        decoder_outputs = torch.cat(decoder_outputs, dim=1)
+        decoder_outputs = F.log_softmax(decoder_outputs, dim=-1)
+        return decoder_outputs, decoder_hidden, None
+     def forward_step(self, input, hidden):
+get_ipython().run_line_magic('clear', '')
+class DecoderRNN(nn.Module):
+    def __init__(self, hidden_size, output_size):
+        super(DecoderRNN, self).__init__()
+        self.embedding = nn.Embedding(output_size, hidden_size)
+        self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
+        self.out = nn.Linear(hidden_size, output_size)
+    def forward(self, encoder_outputs, encoder_hidden, target_tensor=None):
+        batch_size = encoder_outputs.size(0)
+        decoder_input = torch.empty(batch_size, 1, dtype=torch.long, device=device).fill(SOS_token)
+        decoder_hidden = encoder_hidden
+        decoder_outputs = []
+        for i in range(MAX_LENGTH):
+            decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+            decoder_outputs.append(decoder_output)
+            if target_tensor is not None:
+                decoder_input = target_tensor[:, i].unsqueeze(1)
+            else:
+                _, topi = decoder_output.topk(1)
+                decoder_input = topi.squeeze(-1).detach()
+        decoder_outputs = torch.cat(decoder_outputs, dim=1)
+        decoder_outputs = F.log_softmax(decoder_outputs, dim=-1)
+        return decoder_outputs, decoder_hidden, None
+    def forward_step(self, input, hidden):
+        output = self.embedding(input)
+        output = F.relu(output)
+        output, hidden = self.gru(output, hidden)
+        output = self.out(output)
+        return output, hidden
+        
+get_ipython().run_cell_magic('capture', '', '# if we stopped here the model would be bad\n# lets go straight for the gold and add attention\n\n')
+'''
+Attention allows the decoder network to 'focus' on diferent part of the encoder's output
+for every step of the decoder's own outputs. 
+Attention requres the calculation of a set of 'attention weights'. These are multiplied
+by the encoder output vectors to create a weighted combination.
+The result 'attn_applied' should contain info about that specific part of the input
+sequence, and thus help the decoder choose the right output words.
+'''
